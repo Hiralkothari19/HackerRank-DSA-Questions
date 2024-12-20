@@ -1,0 +1,75 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    
+    static class SinglyLinkedListNode {
+        public int data;
+        public SinglyLinkedListNode next;
+
+        public SinglyLinkedListNode(int nodeData) {
+            this.data = nodeData;
+            this.next = null;
+        }
+    }
+
+    public static SinglyLinkedListNode mergeLists(SinglyLinkedListNode headA, SinglyLinkedListNode headB) {
+        if (headA == null) return headB;
+        if (headB == null) return headA;
+
+        if (headA.data < headB.data) {
+            headA.next = mergeLists(headA.next, headB);
+            return headA;
+        } else {
+            headB.next = mergeLists(headA, headB.next);
+            return headB;
+        }
+    }
+
+    public static void printList(SinglyLinkedListNode node) {
+        while (node != null) {
+            System.out.print(node.data + " ");
+            node = node.next;
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int tests = scanner.nextInt();
+
+        for (int t = 0; t < tests; t++) {
+            int llist1Count = scanner.nextInt();
+            SinglyLinkedListNode headA = null, tailA = null;
+            for (int i = 0; i < llist1Count; i++) {
+                int llist1Item = scanner.nextInt();
+                SinglyLinkedListNode newNode = new SinglyLinkedListNode(llist1Item);
+                if (headA == null) {
+                    headA = tailA = newNode;
+                } else {
+                    tailA.next = newNode;
+                    tailA = newNode;
+                }
+            }
+
+            int llist2Count = scanner.nextInt();
+            SinglyLinkedListNode headB = null, tailB = null;
+            for (int i = 0; i < llist2Count; i++) {
+                int llist2Item = scanner.nextInt();
+                SinglyLinkedListNode newNode = new SinglyLinkedListNode(llist2Item);
+                if (headB == null) {
+                    headB = tailB = newNode;
+                } else {
+                    tailB.next = newNode;
+                    tailB = newNode;
+                }
+            }
+
+            SinglyLinkedListNode mergedHead = mergeLists(headA, headB);
+            printList(mergedHead);
+        }
+
+        scanner.close();
+    }
+}
