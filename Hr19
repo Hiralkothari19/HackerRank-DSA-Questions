@@ -1,0 +1,91 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    static class SinglyLinkedListNode {
+        public int data;
+        public SinglyLinkedListNode next;
+
+        public SinglyLinkedListNode(int nodeData) {
+            this.data = nodeData;
+            this.next = null;
+        }
+    }
+
+    static class SinglyLinkedList {
+        public SinglyLinkedListNode head;
+        public SinglyLinkedListNode tail;
+
+        public SinglyLinkedList() {
+            this.head = null;
+            this.tail = null;
+        }
+
+        public void insertNode(int nodeData) {
+            SinglyLinkedListNode node = new SinglyLinkedListNode(nodeData);
+
+            if (this.head == null) {
+                this.head = node;
+            } else {
+                this.tail.next = node;
+            }
+
+            this.tail = node;
+        }
+    }
+
+    static boolean hasCycle(SinglyLinkedListNode head) {
+        if (head == null) return false;
+
+        SinglyLinkedListNode slow = head;
+        SinglyLinkedListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;        // Move slow pointer by 1
+            fast = fast.next.next;  // Move fast pointer by 2
+
+            if (slow == fast) {
+                return true; // Cycle detected
+            }
+        }
+
+        return false; // No cycle
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int tests = scanner.nextInt();
+        for (int t = 0; t < tests; t++) {
+            int index = scanner.nextInt();
+            int n = scanner.nextInt();
+
+            SinglyLinkedList list = new SinglyLinkedList();
+
+            for (int i = 0; i < n; i++) {
+                list.insertNode(scanner.nextInt());
+            }
+
+            if (index != -1) {
+                SinglyLinkedListNode temp = list.head;
+                SinglyLinkedListNode cycleNode = null;
+
+                for (int i = 0; temp != null && i < n; i++) {
+                    if (i == index) {
+                        cycleNode = temp;
+                    }
+                    if (temp.next == null) {
+                        temp.next = cycleNode; // Create the cycle
+                        break;
+                    }
+                    temp = temp.next;
+                }
+            }
+
+            System.out.println(hasCycle(list.head) ? 1 : 0);
+        }
+
+        scanner.close();
+    }
+}
