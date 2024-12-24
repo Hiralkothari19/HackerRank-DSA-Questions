@@ -1,0 +1,88 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    static class SinglyLinkedListNode {
+        public int data;
+        public SinglyLinkedListNode next;
+
+        public SinglyLinkedListNode(int nodeData) {
+            this.data = nodeData;
+            this.next = null;
+        }
+    }
+
+    static class SinglyLinkedList {
+        public SinglyLinkedListNode head;
+        public SinglyLinkedListNode tail;
+
+        public SinglyLinkedList() {
+            this.head = null;
+            this.tail = null;
+        }
+
+        public void insertNode(int nodeData) {
+            SinglyLinkedListNode node = new SinglyLinkedListNode(nodeData);
+
+            if (this.head == null) {
+                this.head = node;
+            } else {
+                this.tail.next = node;
+            }
+
+            this.tail = node;
+        }
+    }
+
+    static int findMergeNode(SinglyLinkedListNode head1, SinglyLinkedListNode head2) {
+        SinglyLinkedListNode current1 = head1;
+        SinglyLinkedListNode current2 = head2;
+
+        while (current1 != current2) {
+            current1 = (current1 == null) ? head2 : current1.next;
+            current2 = (current2 == null) ? head1 : current2.next;
+        }
+
+        return current1.data;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int tests = scanner.nextInt();
+
+        for (int t = 0; t < tests; t++) {
+            int mergeIndex = scanner.nextInt();
+
+            SinglyLinkedList list1 = new SinglyLinkedList();
+            int list1Count = scanner.nextInt();
+
+            for (int i = 0; i < list1Count; i++) {
+                list1.insertNode(scanner.nextInt());
+            }
+
+            SinglyLinkedList list2 = new SinglyLinkedList();
+            int list2Count = scanner.nextInt();
+
+            for (int i = 0; i < list2Count; i++) {
+                list2.insertNode(scanner.nextInt());
+            }
+
+            SinglyLinkedListNode mergePoint = list1.head;
+            for (int i = 0; i < mergeIndex; i++) {
+                mergePoint = mergePoint.next;
+            }
+
+            SinglyLinkedListNode temp = list2.head;
+            while (temp.next != null) {
+                temp = temp.next;
+            }
+            temp.next = mergePoint;
+
+            System.out.println(findMergeNode(list1.head, list2.head));
+        }
+
+        scanner.close();
+    }
+}
