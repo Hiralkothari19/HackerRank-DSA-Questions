@@ -1,0 +1,54 @@
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int data;
+    Node left, right;
+
+    Node(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+public class Solution {
+
+    // Method to calculate the height of the binary tree
+    public static int getHeight(Node root) {
+        if (root == null) {
+            return -1; // Height of an empty tree is -1
+        }
+
+        int leftHeight = getHeight(root.left); // Calculate height of left subtree
+        int rightHeight = getHeight(root.right); // Calculate height of right subtree
+
+        return Math.max(leftHeight, rightHeight) + 1; // Return the maximum height + 1
+    }
+
+    // Method to insert a node into a binary search tree
+    public static Node insert(Node root, int data) {
+        if (root == null) {
+            return new Node(data);
+        }
+        if (data < root.data) {
+            root.left = insert(root.left, data);
+        } else {
+            root.right = insert(root.right, data);
+        }
+        return root;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int n = scanner.nextInt(); // Number of nodes in the tree
+        Node root = null;
+
+        for (int i = 0; i < n; i++) {
+            int data = scanner.nextInt();
+            root = insert(root, data); // Insert each node into the BST
+        }
+
+        System.out.println(getHeight(root)); // Print the height of the tree
+    }
