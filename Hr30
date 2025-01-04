@@ -1,0 +1,71 @@
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+
+public class Solution {
+
+    public static Node lca(Node root, int v1, int v2) {
+        if (root == null) {
+            return null;
+        }
+
+        // If both v1 and v2 are smaller than root, LCA lies in the left subtree
+        if (v1 < root.data && v2 < root.data) {
+            return lca(root.left, v1, v2);
+        }
+
+        // If both v1 and v2 are greater than root, LCA lies in the right subtree
+        if (v1 > root.data && v2 > root.data) {
+            return lca(root.right, v1, v2);
+        }
+
+        // If one value is on the left and the other is on the right, the root is the LCA
+        return root;
+    }
+
+    public static Node insert(Node root, int data) {
+        if (root == null) {
+            return new Node(data);
+        } else {
+            if (data <= root.data) {
+                root.left = insert(root.left, data);
+            } else {
+                root.right = insert(root.right, data);
+            }
+            return root;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int n = scanner.nextInt(); // Number of nodes in the tree
+        Node root = null;
+
+        for (int i = 0; i < n; i++) {
+            int value = scanner.nextInt();
+            root = insert(root, value);
+        }
+
+        int v1 = scanner.nextInt();
+        int v2 = scanner.nextInt();
+
+        Node lcaNode = lca(root, v1, v2);
+
+        // Print only the data of the LCA node
+        System.out.println(lcaNode.data);
+    }
+}
+
+
