@@ -1,0 +1,126 @@
+import java.io.*;
+import java.util.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.joining;
+
+class Result {
+
+    /*
+     * Complete the 'swapNodes' function below.
+     *
+     * The function is expected to return a 2D_INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. 2D_INTEGER_ARRAY indexes
+     *  2. INTEGER_ARRAY queries
+     */
+
+    static class TreeNode {
+        int data;
+        TreeNode left, right;
+
+        TreeNode(int data) {
+            this.data = data;
+        }
+    }
+
+    public static List<List<Integer>> swapNodes(List<List<Integer>> indexes, List<Integer> queries) {
+        List<List<Integer>> result = new ArrayList<>();
+        TreeNode root = buildTree(indexes);
+
+        for (int k : queries) {
+            swapAtLevels(root, k, 1);
+            List<Integer> traversal = new ArrayList<>();
+            inOrderTraversal(root, traversal);
+            result.add(traversal);
+        }
+
+        return result;
+    }
+
+    private static TreeNode buildTree(List<List<Integer>> indexes) {
+        TreeNode root = new TreeNode(1);
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        for (List<Integer> pair : indexes) {
+            TreeNode current = queue.poll();
+            int leftData = pair.get(0);
+            int rightData = pair.get(1);
+
+            if (leftData != -1) {
+                current.left = new TreeNode(leftData);
+                queue.add(current.left);
+            }
+
+            if (rightData != -1) {
+                current.right = new TreeNode(rightData);
+                queue.add(current.right);
+            }
+        }
+        return root;
+    }
+
+    private static void swapAtLevels(TreeNode node, int k, int level) {
+        if (node == null) return;
+
+        if (level % k == 0) {
+            TreeNode temp = node.left;
+            node.left = node.right;
+            node.right = temp;
+        }
+
+        swapAtLevels(node.left, k, level + 1);
+        swapAtLevels(node.right, k, level + 1);
+    }
+
+    private static void inOrderTraversal(TreeNode node, List<Integer> result) {
+        if (node == null) return;
+
+        inOrderTraversal(node.left, result);
+        result.add(node.data);
+        inOrderTraversal(node.right, result);
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int n = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<List<Integer>> indexes = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            indexes.add(
+                Arrays.stream(bufferedReader.readLine().trim().split(" "))
+                      .map(Integer::parseInt)
+                      .collect(toList())
+            );
+        }
+
+        int queriesCount = Integer.parseInt(bufferedReader.readLine().trim());
+        List<Integer> queries = new ArrayList<>();
+        for (int i = 0; i < queriesCount; i++) {
+            queries.add(Integer.parseInt(bufferedReader.readLine().trim()));
+        }
+
+        List<List<Integer>> result = Result.swapNodes(indexes, queries);
+
+        result.stream()
+            .map(r -> r.stream()
+                        .map(Object::toString)
+                        .collect(joining(" ")))
+            .forEach(output -> {
+                try {
+                    bufferedWriter.write(output);
+                    bufferedWriter.newLine();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
